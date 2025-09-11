@@ -1,20 +1,13 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"os"
-
-	"github.com/jafferhussain11/celeb-social/models/friendships"
-	"github.com/jafferhussain11/celeb-social/models/posts"
-	"github.com/jafferhussain11/celeb-social/models/users"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
-// TODO :change to sqlc
-var DB *gorm.DB
-
-func Config() {
+func Config() *sql.DB {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s dbname=%s port=%s sslmode=%s",
 		os.Getenv("DB_HOST"),
@@ -24,26 +17,19 @@ func Config() {
 		os.Getenv("DB_SSLMODE"),
 	)
 
-	//this is setting up GORM wrapper
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := sql.Open("pgx", dsn)
 	if err != nil {
-		fmt.Println("Unable to connect to database")
+		fmt.Printf("Error opening database connection: %v\n", err)
 		panic(err)
 	}
 
-	sql, err := db.DB()
-	if err != nil {
-		fmt.Println("Unable to get DB from GORM")
+	if err = db.Ping(); err != nil {
+		fmt.Printf("Error pinging database connection: %v\n", err)
 		panic(err)
 	}
 
-	//settings for your actual *sql.DB which is from the go packages
+	fmt.Println("Successfully connected to database")
 
-	if err := sql.Ping(); err != nil {
-		fmt.Println("Unable to ping DB")
-		panic(err)
-	}
+	return db
 
-	DB = db
-	DB.AutoMigrate(&users.User{}, &friendships.Friendship{}, &posts.Post{})
 }
