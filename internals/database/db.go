@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO :change to sqlc
 var DB *gorm.DB
 
 func Config() {
