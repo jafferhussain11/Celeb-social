@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jafferhussain11/celeb-social/routes"
+	"github.com/jafferhussain11/celeb-social/internals/routes"
 )
 
 //type ErrorHandler = func(*Ctx, error) error
@@ -21,6 +21,7 @@ var notFoundHandler = func(c *fiber.Ctx) error {
 		"status":  "error",
 		"message": "Requested resource at Route " + c.OriginalURL() + " Not Found",
 	}
+
 	return c.Status(fiber.StatusNotFound).JSON(msg)
 }
 
@@ -28,4 +29,5 @@ func addRoutes(app *fiber.App) {
 	baseRouter := app.Group("/celeb-app")
 
 	routes.Users(baseRouter)
+
 }
