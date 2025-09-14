@@ -13,17 +13,17 @@ help:
 # ==================================================================================== #
 
 # Database
-DB_HOST=
-DB_USER=
+DB_HOST=localhost
+DB_USER=jafferhussain
 DB_PASSWORD=
-DB_NAME=
+DB_NAME=socio
 DB_PORT=5432
 DB_SSLMODE=disable
 DB_DSN=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
 MIGRATIONS_DIR=sql/schema
 
 # Application
-BINARY_NAME=
+BINARY_NAME=socio
 BUILD_DIR=./bin
 
 # ==================================================================================== #
@@ -33,7 +33,7 @@ BUILD_DIR=./bin
 ## run: run the application
 .PHONY: run
 run:
-	go run ./cmd/api
+	go run ./cmd
 
 ## build: build the application
 .PHONY: build
@@ -98,7 +98,7 @@ db/backup:
 	pg_dump "$(DB_DSN)" > ./backups/backup_$(shell date +%Y%m%d_%H%M%S).sql
 	@echo "Backup created in ./backups/"
 
-## db/restore: restore database from backup (usage: make db/restore FILE=backup.sql)
+## db/restore: restore database from backup (usage: make db/restore FILE=backup.database)
 .PHONY: db/restore
 db/restore:
 	@if [ -z "$(FILE)" ]; then echo "Usage: make db/restore FILE=backup.sql"; exit 1; fi
